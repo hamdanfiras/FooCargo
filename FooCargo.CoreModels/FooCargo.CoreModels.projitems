@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>eea1e509-2070-44eb-ace8-a690449c7fb8</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>FooCargo.CoreModels</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Manifest.cs" />
+    <Compile Include="..\FooCargo.CoreModels\MailType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Rate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shipment.cs" />
+  </ItemGroup>
+</Project>

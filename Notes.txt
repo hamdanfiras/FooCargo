@@ -1,0 +1,3 @@
+Two levels of access
+	Users can change rate
+	Users can change manifest and shipment

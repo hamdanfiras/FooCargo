@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30711.63
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FooCargo", "FooCargo\FooCargo.csproj", "{78EC4BA6-E511-4B93-B759-1352ED442ABE}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "FooCargo.CoreModels", "FooCargo.CoreModels\FooCargo.CoreModels.shproj", "{EEA1E509-2070-44EB-ACE8-A690449C7FB8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{11D4D0EA-78C7-4BBC-AC5F-4FF25CD9B596}"
+	ProjectSection(SolutionItems) = preProject
+		Notes.txt = Notes.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		FooCargo.CoreModels\FooCargo.CoreModels.projitems*{78ec4ba6-e511-4b93-b759-1352ed442abe}*SharedItemsImports = 5
+		FooCargo.CoreModels\FooCargo.CoreModels.projitems*{eea1e509-2070-44eb-ace8-a690449c7fb8}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{78EC4BA6-E511-4B93-B759-1352ED442ABE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78EC4BA6-E511-4B93-B759-1352ED442ABE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78EC4BA6-E511-4B93-B759-1352ED442ABE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78EC4BA6-E511-4B93-B759-1352ED442ABE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F6E06784-CDAF-44D1-B625-7E1CFBFB8FD1}
+	EndGlobalSection
+EndGlobal
