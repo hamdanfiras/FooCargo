@@ -8,6 +8,6 @@ namespace FooCargo.CoreModels
        TypeX = 1,
        TypeY = 2,
        TypeZ = 4,
-     
     }
 }
+

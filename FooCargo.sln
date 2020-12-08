@@ -5,12 +5,12 @@ VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FooCargo", "FooCargo\FooCargo.csproj", "{78EC4BA6-E511-4B93-B759-1352ED442ABE}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "FooCargo.CoreModels", "FooCargo.CoreModels\FooCargo.CoreModels.shproj", "{EEA1E509-2070-44EB-ACE8-A690449C7FB8}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{11D4D0EA-78C7-4BBC-AC5F-4FF25CD9B596}"
 	ProjectSection(SolutionItems) = preProject
 		Notes.txt = Notes.txt
 	EndProjectSection
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "FooCargo.CoreModels", "FooCargo.CoreModels\FooCargo.CoreModels.shproj", "{EEA1E509-2070-44EB-ACE8-A690449C7FB8}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

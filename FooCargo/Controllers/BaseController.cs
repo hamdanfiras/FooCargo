@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FooCargo.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FooCargo.Controllers
 {
@@ -7,15 +8,13 @@ namespace FooCargo.Controllers
     //[Authorize]
     public class BaseController : ControllerBase
     {
-    }
-
-    public class FOoController : BaseController
-    {
-        public ActionResult Foo()
+        public BaseController(CargoDb context)
         {
-            var X = "";
-
-            return null;
+            Db = context;
         }
+
+        protected CargoDb Db { get; }
     }
+
+ 
 }

@@ -9,5 +9,7 @@
         public decimal Weight { get; set; }
         public int NumberOfItems { get; set; }
         public decimal Fee { get; set; }
+
+        public Manifest Manifest { get; set; }
     }
 }
