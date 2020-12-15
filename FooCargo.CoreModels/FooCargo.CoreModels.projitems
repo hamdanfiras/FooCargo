@@ -9,7 +9,11 @@
     <Import_RootNamespace>FooCargo.CoreModels</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)LoginInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LoginResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Manifest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RegisterInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UserProfile.cs" />
     <Compile Include="..\FooCargo.CoreModels\MailType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Rate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Shipment.cs" />

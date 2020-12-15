@@ -1,7 +1,9 @@
 using FooCargo.Models;
+using FooCargo.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -41,6 +43,12 @@ namespace FooCargo
                 .AddEntityFrameworkStores<CargoDb>()
                 .AddDefaultTokenProviders();
 
+            services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            
+            services.AddScoped<JWT>();
+
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -49,8 +57,9 @@ namespace FooCargo
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
-                options.Password.RequiredLength = 1;
+                options.Password.RequiredLength = 5;
                 options.Password.RequiredUniqueChars = 0;
+                //options.Lockout = new LockoutOptions { DefaultLockoutTimeSpan = TimeSpan.FromHours(24), MaxFailedAccessAttempts = 5 };
             });
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
@@ -95,6 +104,8 @@ namespace FooCargo
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
