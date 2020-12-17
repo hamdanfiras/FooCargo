@@ -8,19 +8,22 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace FooCargo.Services
 {
     public class JWT
     {
         private readonly IConfiguration configuration;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public JWT(IConfiguration configuration)
+        public JWT(IConfiguration configuration, UserManager<ApplicationUser> userManager)
         {
             this.configuration = configuration;
+            this.userManager = userManager;
         }
 
-        public string GenerateJwtToken(ApplicationUser user)
+        public async Task <string> GenerateJwtTokenAsync(ApplicationUser user)
         {
             var email = user.Email.ToLower();
             var claims = new List<Claim>
@@ -32,6 +35,11 @@ namespace FooCargo.Services
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(ClaimTypes.Email, user.Email),
             };
+
+
+            // The claims in the database (asp.net identity package) are fetched from the database and appended to the claims list above
+            IList<Claim> dbIdentityClaims = await userManager.GetClaimsAsync(user);
+            claims.AddRange(dbIdentityClaims);
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

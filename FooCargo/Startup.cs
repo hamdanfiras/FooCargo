@@ -1,3 +1,4 @@
+using FooCargo.Authorization;
 using FooCargo.Models;
 using FooCargo.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -46,7 +47,7 @@ namespace FooCargo
             services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            
+
             services.AddScoped<JWT>();
 
 
@@ -82,6 +83,8 @@ namespace FooCargo
                         ClockSkew = TimeSpan.Zero // remove delay of token when expire
                     };
                 });
+
+            services.AddCargoAuthorization();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

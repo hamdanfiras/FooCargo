@@ -1,4 +1,5 @@
-﻿using FooCargo.CoreModels;
+﻿using FooCargo.Authorization;
+using FooCargo.CoreModels;
 using FooCargo.Models;
 using FooCargo.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FooCargo.Controllers
 {
-
+    
     public class AccountController : BaseController
     {
         private readonly SignInManager<ApplicationUser> signInManager;
@@ -35,7 +36,7 @@ namespace FooCargo.Controllers
             ApplicationUser user = await userManager.FindByNameAsync(this.User.Identity.Name);
             return user.ToUserProfile();
             
-            // the above is called c# extension method which is a shortcut to the line below
+            // the above called a c# extension method which is a shortcut to the line below
             //return ModelExtensions.ToUserProfile(user);
         }
 
@@ -58,7 +59,7 @@ namespace FooCargo.Controllers
             var res = await signInManager.CheckPasswordSignInAsync(user, loginInfo.Password, true);
             if (res.Succeeded)
             {
-                var token = jwt.GenerateJwtToken(user);
+                var token = await jwt.GenerateJwtTokenAsync(user);
                 var loginResult = new LoginResult { Token = token };
                 return Ok(loginResult);
             }
@@ -80,9 +81,8 @@ namespace FooCargo.Controllers
             var res = await userManager.CreateAsync(user, registerInfo.Password);
             if (res.Succeeded)
             {
-                await userManager.AddClaimAsync(user, new System.Security.Claims.Claim(Claims.STAFF, "true"));
-                
-             
+                await userManager.AddClaimAsync(user, new System.Security.Claims.Claim(Claims.ADMIN, "true"));
+
                 return NoContent();
             }
             else return BadRequest(res.Errors);

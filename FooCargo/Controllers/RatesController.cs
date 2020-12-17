@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FooCargo.CoreModels;
 using FooCargo.Models;
+using Microsoft.AspNetCore.Authorization;
+using FooCargo.Authorization;
 
 namespace FooCargo.Controllers
 {
@@ -18,6 +20,7 @@ namespace FooCargo.Controllers
 
         // GET: api/Rates
         [HttpGet]
+        [Authorize(Policy = Policies.VIEW_RATE)]
         public async Task<ActionResult<IEnumerable<Rate>>> GetRates()
         {
             return await Db.Rates.ToListAsync();
@@ -25,6 +28,7 @@ namespace FooCargo.Controllers
 
         // GET: api/Rates/5
         [HttpGet("{mailType}/{origin}/{destination}")]
+        [Authorize(Policy = Policies.VIEW_RATE)]
         public async Task<ActionResult<Rate>> GetRate(MailType mailType, string origin, string destination)
         {
             var rate = await Db.Rates.FirstOrDefaultAsync(x => x.MailType == mailType && x.Origin == origin && x.Destination == destination);
@@ -40,6 +44,8 @@ namespace FooCargo.Controllers
         // PUT: api/Rates/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{mailType}/{origin}/{destination}")]
+        [Authorize(Policy = Policies.MANAGE_RATE)]
+      
         public async Task<IActionResult> PutRate(MailType mailType, string origin, string destination, Rate rate)
         {
             if (mailType != rate.MailType || origin != rate.Origin || destination != rate.Destination)
@@ -71,6 +77,7 @@ namespace FooCargo.Controllers
         // POST: api/Rates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Policy = Policies.MANAGE_RATE)]
         public async Task<ActionResult<Rate>> PostRate(Rate rate)
         {
             Db.Rates.Add(rate);
@@ -90,11 +97,12 @@ namespace FooCargo.Controllers
                 }
             }
 
-            return CreatedAtAction("GetRate", new { id = rate.MailType }, rate);
+            return CreatedAtAction("GetRate", new { mailType = rate.MailType, origin=rate.Origin, destination= rate.Destination }, rate);
         }
 
         // DELETE: api/Rates/5
         [HttpDelete("{id}")]
+        [Authorize(Policy = Policies.MANAGE_RATE)]
         public async Task<IActionResult> DeleteRate(MailType id)
         {
             var rate = await Db.Rates.FindAsync(id);
