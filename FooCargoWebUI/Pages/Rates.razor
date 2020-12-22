@@ -1,0 +1,14 @@
+﻿@using FooCargo.CoreModels
+@page "/rates"
+@inject HttpClient Http
+
+<h3>Rates @rates.Count</h3>
+
+@code {
+    private List<Rate> rates = new List<Rate>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        rates = await Http.GetFromJsonAsync<List<Rate>>("/api/rates");
+    }
+}

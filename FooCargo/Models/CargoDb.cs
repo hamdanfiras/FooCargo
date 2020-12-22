@@ -38,6 +38,7 @@ namespace FooCargo.Models
         public DbSet<Rate> Rates { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
 
+         
     }
 
   

@@ -49,6 +49,7 @@ namespace FooCargo
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddScoped<JWT>();
+            services.AddScoped<DapperCargoDb>();
 
 
             services.Configure<IdentityOptions>(options =>

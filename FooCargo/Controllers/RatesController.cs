@@ -9,13 +9,28 @@ using FooCargo.CoreModels;
 using FooCargo.Models;
 using Microsoft.AspNetCore.Authorization;
 using FooCargo.Authorization;
+using System.Data;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Dapper;
+using FooCargo.Services;
+using System.Threading;
 
 namespace FooCargo.Controllers
 {
+#if DEBUG
+    [AllowAnonymous] 
+#endif
+
     public class RatesController : BaseController
     {
-        public RatesController(CargoDb context) : base(context)
+        private readonly DapperCargoDb dapperCargoDb;
+        private readonly IConfiguration configuration;
+
+        public RatesController(CargoDb context, DapperCargoDb dapperCargoDb, IConfiguration configuration) : base(context)
         {
+            this.dapperCargoDb = dapperCargoDb;
+            this.configuration = configuration;
         }
 
         // GET: api/Rates
@@ -25,6 +40,17 @@ namespace FooCargo.Controllers
         {
             return await Db.Rates.ToListAsync();
         }
+
+        // GET: api/Rates
+        [HttpGet()]
+        [Route("RatesView")]
+        [Authorize(Policy = Policies.VIEW_RATE)]
+        public  ActionResult<IEnumerable<RateView>> GetRatesFromView()
+        {
+            var res = dapperCargoDb.Connnection().Query<RateView>("Select * From RatesView").ToList();
+            return res;
+        }
+
 
         // GET: api/Rates/5
         [HttpGet("{mailType}/{origin}/{destination}")]
@@ -45,7 +71,7 @@ namespace FooCargo.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{mailType}/{origin}/{destination}")]
         [Authorize(Policy = Policies.MANAGE_RATE)]
-      
+
         public async Task<IActionResult> PutRate(MailType mailType, string origin, string destination, Rate rate)
         {
             if (mailType != rate.MailType || origin != rate.Origin || destination != rate.Destination)
@@ -97,7 +123,7 @@ namespace FooCargo.Controllers
                 }
             }
 
-            return CreatedAtAction("GetRate", new { mailType = rate.MailType, origin=rate.Origin, destination= rate.Destination }, rate);
+            return CreatedAtAction("GetRate", new { mailType = rate.MailType, origin = rate.Origin, destination = rate.Destination }, rate);
         }
 
         // DELETE: api/Rates/5
