@@ -2,10 +2,38 @@
 @page "/rates"
 @inject HttpClient Http
 
-<h3>Rates @rates.Count</h3>
+@if (rates == null)
+{
+    <p>Loading the rates</p>
+}
+else
+{
+    <h3 class="toprint">Rates @rates.Count</h3>
+    <table  class="table toprint">
+        <thead>
+            <tr>
+                <th>Origin</th>
+                <th>Destination</th>
+                <th>Mail Type</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var rate in rates)
+            {
+                <tr>
+                    <td>@rate.Origin</td>
+                    <td>@rate.Destination</td>
+                    <td>@rate.MailType</td>
+                    <td>@rate.Amount</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
-    private List<Rate> rates = new List<Rate>();
+    private List<Rate> rates = null;
 
     protected override async Task OnInitializedAsync()
     {

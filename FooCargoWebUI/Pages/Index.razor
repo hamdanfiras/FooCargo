@@ -1,7 +1,31 @@
 ﻿@page "/"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@code {
+    void Login()
+    {
+        FooCargoAuthenticationStateProvider provider = AuthenticationStateProvider as FooCargoAuthenticationStateProvider;
+        provider.Login();
+    }
 
-<h1>Hello, world!</h1>
+    void Logout()
+    {
+        FooCargoAuthenticationStateProvider provider = AuthenticationStateProvider as FooCargoAuthenticationStateProvider;
+        provider.Logout();
+    }
+}
+ 
+<AuthorizeView>
+    <Authorized>
+        <h1>Hello, world!</h1>
+        Welcome to your new app. <a href="/counter">Go to counter</a>
+        <br />
+        <button @onclick="Logout">Please logout</button>
 
-Welcome to your new app. <a href="/counter">Go to counter</a>
+    </Authorized>
+    <NotAuthorized>
+        <h1>Not Authorized</h1>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+        <button @onclick="Login">Please login</button>
+
+    </NotAuthorized>
+</AuthorizeView>

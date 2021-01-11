@@ -1,3 +1,5 @@
+using FooCargo.CoreModels;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,7 +20,8 @@ namespace FooCargoWebUI
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(Config.ApiHost) });
-
+            builder.Services.AddScoped<AuthenticationStateProvider, FooCargoAuthenticationStateProvider>();
+            builder.Services.AddAuthorizationCore();
             await builder.Build().RunAsync();
         }
     }

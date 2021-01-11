@@ -51,6 +51,22 @@ namespace FooCargo
             services.AddScoped<JWT>();
             services.AddScoped<DapperCargoDb>();
 
+            //services.AddCors();
+            services.AddCors(c =>
+            {
+                c.AddPolicy("AllOriginsAllowed", options => options.AllowAnyOrigin());
+            });
+
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy(name: "AllowFromOrigins",
+            //                      builder =>
+            //                      {
+            //                          builder.WithOrigins("http://example.com",
+            //                                              "http://www.contoso.com");
+            //                      });
+            //});
+
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -104,6 +120,9 @@ namespace FooCargo
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FooCargo v1"));
             }
+
+     
+            app.UseCors("AllOriginsAllowed");
 
             app.UseHttpsRedirection();
 
