@@ -1,19 +1,21 @@
 ﻿@page "/"
 @inject AuthenticationStateProvider AuthenticationStateProvider
+
 @code {
-    void Login()
+    async Task Login()
     {
+        // casting from AuthenticationStateProvider to our implementation (FooCargoAuthenticationStateProvider)
         FooCargoAuthenticationStateProvider provider = AuthenticationStateProvider as FooCargoAuthenticationStateProvider;
-        provider.Login();
+        await provider.Login("hamdanfiras@gmail.com", "12345");
     }
 
-    void Logout()
+    async Task Logout()
     {
         FooCargoAuthenticationStateProvider provider = AuthenticationStateProvider as FooCargoAuthenticationStateProvider;
-        provider.Logout();
+        await provider.Logout();
     }
 }
- 
+
 <AuthorizeView>
     <Authorized>
         <h1>Hello, world!</h1>

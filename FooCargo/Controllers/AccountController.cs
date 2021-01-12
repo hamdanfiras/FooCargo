@@ -81,6 +81,7 @@ namespace FooCargo.Controllers
             var res = await userManager.CreateAsync(user, registerInfo.Password);
             if (res.Succeeded)
             {
+                // this code is just for practicing how to add a policy, in real life, registration should add authorization policies
                 await userManager.AddClaimAsync(user, new System.Security.Claims.Claim(Claims.ADMIN, "true"));
 
                 return NoContent();

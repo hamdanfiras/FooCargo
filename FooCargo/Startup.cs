@@ -54,7 +54,7 @@ namespace FooCargo
             //services.AddCors();
             services.AddCors(c =>
             {
-                c.AddPolicy("AllOriginsAllowed", options => options.AllowAnyOrigin());
+                c.AddPolicy("AllOriginsAllowed", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
 
             //services.AddCors(options =>

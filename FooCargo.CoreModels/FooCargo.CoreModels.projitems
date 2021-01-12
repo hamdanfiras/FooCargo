@@ -9,6 +9,7 @@
     <Import_RootNamespace>FooCargo.CoreModels</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Claims.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LoginInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LoginResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Manifest.cs" />

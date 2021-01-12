@@ -1,3 +1,4 @@
+@*CascadingAuthenticationState is responsible for getting the authentication state from the authentication state provider, without it, authentication will not work in the nested pages*@
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
         <Found Context="routeData">

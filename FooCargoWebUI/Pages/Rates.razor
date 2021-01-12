@@ -1,6 +1,12 @@
 ﻿@using FooCargo.CoreModels
+@using Blazored.LocalStorage
+@using System.Linq;
+
 @page "/rates"
 @inject HttpClient Http
+@inject ILocalStorageService LocalStorage
+@inject Auth Auth
+@*@inject FooCargoWebUI.BarApiClient BarHttp*@
 
 @if (rates == null)
 {
@@ -9,13 +15,17 @@
 else
 {
     <h3 class="toprint">Rates @rates.Count</h3>
-    <table  class="table toprint">
+    <table class="table toprint">
         <thead>
             <tr>
                 <th>Origin</th>
                 <th>Destination</th>
                 <th>Mail Type</th>
                 <th>Amount</th>
+                @if (canEditRates)
+                {
+                    <th>Edit</th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -26,6 +36,10 @@ else
                     <td>@rate.Destination</td>
                     <td>@rate.MailType</td>
                     <td>@rate.Amount</td>
+                    @if (canEditRates)
+                    {
+                        <td><button class="btn btn-primary">Edit</button></td>
+                    }
                 </tr>
             }
         </tbody>
@@ -34,9 +48,20 @@ else
 
 @code {
     private List<Rate> rates = null;
+    private bool canEditRates = false;
 
     protected override async Task OnInitializedAsync()
     {
+        var loginResult = await LocalStorage.GetItemAsync<LoginResult>("LOGIN_RESULT");
+
+        Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginResult.Token);
         rates = await Http.GetFromJsonAsync<List<Rate>>("/api/rates");
+
+        canEditRates = await Auth.IsAdmin();
+
+        bool? b = null;
+        int? x = null;
     }
+
+
 }

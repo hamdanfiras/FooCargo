@@ -19,7 +19,7 @@ using System.Threading;
 namespace FooCargo.Controllers
 {
 #if DEBUG
-    [AllowAnonymous] 
+    //[AllowAnonymous] 
 #endif
 
     public class RatesController : BaseController

@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject Auth Auth
 
 <div class="page">
     <div class="sidebar">
@@ -7,7 +8,7 @@
 
     <div class="main">
         <div class="top-row px-4">
-            <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
+            <a href="http://blazor.net" target="_blank" class="ml-md-auto">@userName`</a>
         </div>
 
         <div class="content px-4">
@@ -15,3 +16,12 @@
         </div>
     </div>
 </div>
+
+@code {
+    string userName;
+    protected override async Task OnInitializedAsync()
+    {
+        userName = await Auth.Name();
+
+    }
+}
