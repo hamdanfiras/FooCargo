@@ -36,16 +36,26 @@ namespace FooCargo.Controllers
         // GET: api/Rates
         [HttpGet]
         [Authorize(Policy = Policies.VIEW_RATE)]
-        public async Task<ActionResult<IEnumerable<Rate>>> GetRates()
+        public async Task<ActionResult<PagedResult<Rate>>> GetRates(int page = 0, int rowsPerPage = 1)
         {
-            return await Db.Rates.ToListAsync();
+          
+            var rates = await Db.Rates.Skip(page * rowsPerPage).Take(rowsPerPage).ToListAsync();
+            var totalCount = await Db.Rates.CountAsync();
+            
+            return new PagedResult<Rate>
+            {
+                Rows = rates,
+                TotalRowCount = totalCount,
+                CurrentPage = page,
+                RowsPerPage = rowsPerPage
+            };
         }
 
         // GET: api/Rates
         [HttpGet()]
         [Route("RatesView")]
         [Authorize(Policy = Policies.VIEW_RATE)]
-        public  ActionResult<IEnumerable<RateView>> GetRatesFromView()
+        public ActionResult<IEnumerable<RateView>> GetRatesFromView()
         {
             var res = dapperCargoDb.Connnection().Query<RateView>("Select * From RatesView").ToList();
             return res;

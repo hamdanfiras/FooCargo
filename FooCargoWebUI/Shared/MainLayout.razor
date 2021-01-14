@@ -8,7 +8,7 @@
 
     <div class="main">
         <div class="top-row px-4">
-            <a href="http://blazor.net" target="_blank" class="ml-md-auto">@userName`</a>
+            <a href="http://blazor.net" target="_blank" class="ml-md-auto">@userName</a>
         </div>
 
         <div class="content px-4">
@@ -22,6 +22,14 @@
     protected override async Task OnInitializedAsync()
     {
         userName = await Auth.Name();
+        Auth.AuthChanged += AuthChangedHandler;
+    }
 
+    protected async void AuthChangedHandler(object sender, EventArgs args)
+    {
+        userName = await Auth.Name();
+
+        // refreshing the binding of the blazor page, because it was not automatically refreshed becuase we are not using a user interface event change like onclick
+        this.StateHasChanged();
     }
 }

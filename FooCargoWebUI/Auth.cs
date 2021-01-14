@@ -11,9 +11,26 @@ namespace FooCargoWebUI
     {
         private FooCargoAuthenticationStateProvider authenticationStateProvider;
 
+        public event EventHandler AuthChanged;
+
         public Auth(AuthenticationStateProvider authenticationStateProvider)
         {
             this.authenticationStateProvider = authenticationStateProvider as FooCargoAuthenticationStateProvider;
+
+            // we are subscribing to the event AuthenticationStateChanged using += c# syntax
+            this.authenticationStateProvider.AuthenticationStateChanged += AuthenticationStateProvider_AuthenticationStateChanged;
+        }
+
+        private void AuthenticationStateProvider_AuthenticationStateChanged(Task<AuthenticationState> task)
+        {
+            // publishing the even AuthChanged, so that components that are using Auth, do not need to subscribe to the authenticationStateProvider
+            AuthChanged?.Invoke(this, new EventArgs());
+
+            // line above is a shortcut for the code below ?. protects from null value exception.
+            //if (AuthChanged != null)
+            //{
+            //    AuthChanged(this, new EventArgs());
+            //}
         }
 
         public async Task<bool> IsAdmin()
@@ -29,7 +46,7 @@ namespace FooCargoWebUI
         public async Task<string> Name()
         {
             var state = await authenticationStateProvider.GetAuthenticationStateAsync();
-            if (state.User.Identity.IsAuthenticated)
+            if (!state.User.Identity.IsAuthenticated)
             {
                 return "Anonymous";
             }

@@ -40,10 +40,10 @@ namespace FooCargoWebUI
             return new AuthenticationState(claimsPrincipal);
         }
 
-        public async Task Login(string email, string password)
+        public async Task Login(LoginInfo loginInfo)
         {
             claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
-            var loginInfo = new LoginInfo { Email = email, Password = password };
+        
             var res = await httpClient.PostAsJsonAsync("/api/account/login", loginInfo);
 
             if (res.IsSuccessStatusCode)

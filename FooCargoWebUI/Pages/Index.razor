@@ -1,12 +1,18 @@
 ﻿@page "/"
 @inject AuthenticationStateProvider AuthenticationStateProvider
-
+@using FooCargo.CoreModels
 @code {
+
+    LoginInfo loginInfo = new LoginInfo();
+
     async Task Login()
     {
         // casting from AuthenticationStateProvider to our implementation (FooCargoAuthenticationStateProvider)
         FooCargoAuthenticationStateProvider provider = AuthenticationStateProvider as FooCargoAuthenticationStateProvider;
-        await provider.Login("hamdanfiras@gmail.com", "12345");
+        await provider.Login(loginInfo);
+        
+        // clear login inputs after login success
+        loginInfo = new LoginInfo();
     }
 
     async Task Logout()
@@ -24,10 +30,24 @@
         <button @onclick="Logout">Please logout</button>
 
     </Authorized>
-    <NotAuthorized>
-        <h1>Not Authorized</h1>
+    <NotAuthorized Context="Auth">
+      
+        <div class="row">
+            <div class="col-6">
+                <EditForm Model="@loginInfo" OnValidSubmit="@Login">
 
-        <button @onclick="Login">Please login</button>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Email address</label>
+                        <InputText @bind-Value="loginInfo.Email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"></InputText>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Password</label>
+                        <InputText @bind-Value="loginInfo.Password" type="password" class="form-control" id="exampleInputPassword1"></InputText>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
 
+                </EditForm>
+            </div>
+        </div>
     </NotAuthorized>
 </AuthorizeView>
