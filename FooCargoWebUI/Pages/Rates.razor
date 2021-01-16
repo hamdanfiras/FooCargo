@@ -1,10 +1,11 @@
 ﻿@using FooCargo.CoreModels
 @using Blazored.LocalStorage
 @using System.Linq;
+@using FooCargoWebUI.APIClient
 
 @page "/rates"
-@inject HttpClient Http
 @inject ILocalStorageService LocalStorage
+@inject ApiClient ApiClient
 @inject Auth Auth
 @*@inject FooCargoWebUI.BarApiClient BarHttp*@
 
@@ -49,7 +50,7 @@ else
             @*<li class="page-item"><a class="page-link" href="#">Previous</a></li>*@
             @foreach (var currPage in Enumerable.Range(0, rates.NumberOfPages))
             {
-                <li class="page-item"><button class="page-link"  @onclick="async () => await GetRates(currPage)">@currPage</button></li>
+                <li class="page-item"><button class="page-link" @onclick="async () => await GetRates(currPage)">@currPage</button></li>
             }
 
 
@@ -117,8 +118,10 @@ else
 
 @code {
     private PagedResult<Rate> rates = null;
+    private List<Airport> airports = null;
     private bool canEditRates = false;
     private Rate rateToEdit = null;
+    int currentPage = 0;
 
 
     protected override async Task OnInitializedAsync()
@@ -129,13 +132,18 @@ else
 
     }
 
-  
+
 
     async Task GetRates(int page = 0)
     {
-        var loginResult = await LocalStorage.GetItemAsync<LoginResult>("LOGIN_RESULT");
-        Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginResult.Token);
-        rates = await Http.GetFromJsonAsync<PagedResult<Rate>>($"/api/rates?page={page}");
+        //var loginResult = await LocalStorage.GetItemAsync<LoginResult>("LOGIN_RESULT");
+        //Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginResult.Token);
+
+        // Above two lines were replaced in TokenHttpClientDelegatingHandler for DRY code
+        currentPage = page;
+        rates = await ApiClient.GetRates(currentPage);
+        airports = await ApiClient.GetAirports();
+        //rates = await httpClient.GetFromJsonAsync<PagedResult<Rate>>($"/api/rates?page={page}");
     }
 
     void Edit(Rate rate)
@@ -148,12 +156,11 @@ else
 
     async Task SubmitRateEdit()
     {
-        var loginResult = await LocalStorage.GetItemAsync<LoginResult>("LOGIN_RESULT");
-        Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginResult.Token);
-        var res = await Http.PutAsJsonAsync($"/api/rates/{rateToEdit.MailType}/{rateToEdit.Origin}/{rateToEdit.Destination}", rateToEdit);
-        if (res.IsSuccessStatusCode)
+
+        var res = await ApiClient.PutRate(rateToEdit);
+        if (res)
         {
-            await GetRates();
+            await GetRates(currentPage);
         }
 
         rateToEdit = null;

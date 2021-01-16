@@ -19,18 +19,20 @@ using System.Threading;
 namespace FooCargo.Controllers
 {
 #if DEBUG
-    //[AllowAnonymous] 
+    //[AllowAnonymous]
 #endif
 
     public class RatesController : BaseController
     {
         private readonly DapperCargoDb dapperCargoDb;
         private readonly IConfiguration configuration;
+        private readonly RateCalculator rateCalculator;
 
-        public RatesController(CargoDb context, DapperCargoDb dapperCargoDb, IConfiguration configuration) : base(context)
+        public RatesController(CargoDb context, DapperCargoDb dapperCargoDb, IConfiguration configuration, RateCalculator rateCalculator) : base(context)
         {
             this.dapperCargoDb = dapperCargoDb;
             this.configuration = configuration;
+            this.rateCalculator = rateCalculator;
         }
 
         // GET: api/Rates
@@ -151,6 +153,12 @@ namespace FooCargo.Controllers
             await Db.SaveChangesAsync();
 
             return NoContent();
+        }
+
+
+        public async Task<ActionResult<decimal>> Calculate(MailType mailType, string origin, string destination, decimal weight, int numberOfItems)
+        {
+            return await rateCalculator.CalculateRate(mailType, origin, destination, weight, numberOfItems);
         }
 
         private bool RateExists(MailType id, string origin, string destination)

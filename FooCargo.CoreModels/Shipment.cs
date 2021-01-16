@@ -1,4 +1,5 @@
-﻿namespace FooCargo.CoreModels
+﻿
+namespace FooCargo.CoreModels
 {
     public partial class Shipment
     {

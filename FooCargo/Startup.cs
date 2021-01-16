@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -50,6 +51,7 @@ namespace FooCargo
 
             services.AddScoped<JWT>();
             services.AddScoped<DapperCargoDb>();
+            services.AddScoped<RateCalculator>();
 
             //services.AddCors();
             services.AddCors(c =>
@@ -103,7 +105,12 @@ namespace FooCargo
 
             services.AddCargoAuthorization();
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(option =>
+            {
+                option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                option.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FooCargo", Version = "v1" });
@@ -121,7 +128,7 @@ namespace FooCargo
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FooCargo v1"));
             }
 
-     
+
             app.UseCors("AllOriginsAllowed");
 
             app.UseHttpsRedirection();

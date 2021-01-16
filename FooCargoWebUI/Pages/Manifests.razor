@@ -1,0 +1,247 @@
+﻿@using FooCargo.CoreModels
+@using Blazored.LocalStorage
+@using System.Linq;
+@using FooCargoWebUI.APIClient
+@page "/manifests"
+@inject ApiClient ApiClient
+
+
+<h3>Manifests</h3>
+
+@if (manifests == null)
+{
+    <p>Loading ...</p>
+}
+else
+{
+    <button class="btn btn-primary" @onclick="() => this.manifestToEdit = new Manifest() { Date = DateTime.Now }">Add Manifest</button>
+
+    <table class="table toprint">
+        <thead>
+            <tr>
+                <th>Flight Number</th>
+                <th>Date</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var manifest in manifests)
+            {
+                <tr>
+                    <td>@manifest.FlightNumber</td>
+                    <td>@manifest.Date.ToString("dd-MMM-yyyy")</td>
+                    <td><button @onclick="() => GetManifestDetails(manifest)" class="page-link">Details</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (currentManifest != null)
+    {
+        <h4>Shipments for @currentManifest.FlightNumber on @currentManifest.Date.ToString("dd-MMM-yyyy")</h4>
+
+        if (currentManifest.Shipments == null)
+        {
+            <p>Loading Shipments ...</p>
+        }
+        else
+        {
+            <button class="btn btn-primary" @onclick="AddShipment">Add Shipment</button>
+            <table class="table toprint">
+                <thead>
+                    <tr>
+                        <th>AWB Number</th>
+                        <th>Origin</th>
+                        <th>Destination</th>
+                        <th>Mail Type</th>
+                        <th>Weight</th>
+                        <th>Number of Items</th>
+                        <th>Fee</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var shipment in currentManifest.Shipments)
+                    {
+                        <tr>
+                            <td>@shipment.AWBNumber</td>
+                            <td>@shipment.Origin</td>
+                            <td>@shipment.Destination</td>
+                            <td>@shipment.MailType</td>
+                            <td>@shipment.Weight</td>
+                            <td>@shipment.NumberOfItems</td>
+                            <td>@shipment.Fee</td>
+                            <td><button class="btn btn-danger" @onclick="() => DeleteShipment(shipment)">Delete</button></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+
+    @if (manifestToEdit != null)
+    {
+        <div class="modal" tabindex="-1" style="display:block" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <EditForm Model="@manifestToEdit" OnValidSubmit="@SubmitManifest">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Manifest</h5>
+
+
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Flight Number</label>
+                                <InputText @bind-Value="manifestToEdit.FlightNumber"
+                                           class="form-control" aria-describedby="Flight Number"></InputText>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Date</label>
+                                <InputDate @bind-Value="manifestToEdit.Date"
+                                           class="form-control" aria-describedby="Date"></InputDate>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button @onclick="() => manifestToEdit = null" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    }
+
+
+    @if (shipmentToEdit != null && airports != null)
+    {
+        <div class="modal" tabindex="-1" style="display:block" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <EditForm Model="@shipmentToEdit" OnValidSubmit="@SubmitShipment">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Shipment</h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">AWBNumber</label>
+                                <InputText @bind-Value="shipmentToEdit.AWBNumber"
+                                           class="form-control" aria-describedby="AWBNumber"></InputText>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Origin</label>
+                                <select class="form-control"
+                                        @bind="shipmentToEdit.Origin">
+                                    @foreach (var airport in airports)
+                                    {
+                                        <option value="@airport.Key">@airport.Name (@airport.Key)</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Destination</label>
+                                <InputText @bind-Value="shipmentToEdit.Destination"
+                                           class="form-control" aria-describedby="Destination"></InputText>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="rateToEditMailTypeLabel" class="form-label">Mail Type:</label>
+                                <select class="form-control"
+                                        @bind="shipmentToEdit.MailType">
+                                    <option value="@MailType.TypeX">Type X</option>
+                                    <option value="@MailType.TypeY">Type Y</option>
+                                    <option value="@MailType.TypeZ">Type Z</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Weight</label>
+                                <InputNumber @bind-Value="shipmentToEdit.Weight"
+                                             class="form-control" aria-describedby="Weight"></InputNumber>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">NumberOfItems</label>
+                                <InputNumber @bind-Value="shipmentToEdit.NumberOfItems"
+                                             class="form-control" aria-describedby="NumberOfItems"></InputNumber>
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button @onclick="() => shipmentToEdit = null" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    }
+
+}
+
+@code {
+
+    List<Manifest> manifests = null;
+    Manifest currentManifest = null;
+    Manifest manifestToEdit = null;
+    Shipment shipmentToEdit = null;
+    List<Airport> airports = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetManifests();
+        airports = await ApiClient.GetAirports();
+    }
+
+    protected async Task GetManifests()
+    {
+        manifests = await ApiClient.GetManifests();
+    }
+
+    protected async Task SubmitManifest()
+    {
+        if (manifestToEdit == null) return;
+        var res = await ApiClient.PostManifest(manifestToEdit);
+        if (res)
+        {
+            await GetManifests();
+        }
+        manifestToEdit = null;
+    }
+
+    public async Task GetManifestDetails(Manifest manifest)
+    {
+        this.currentManifest = manifest;
+        this.currentManifest = await ApiClient.GetManifestDetails(manifest.FlightNumber, manifest.Date);
+    }
+
+    public void AddShipment()
+    {
+        shipmentToEdit = new Shipment
+        {
+            Manifest = currentManifest,
+        };
+    }
+
+    protected async Task SubmitShipment()
+    {
+        if (shipmentToEdit == null) return;
+        var res = await ApiClient.PostShipment(shipmentToEdit);
+        if (res)
+        {
+            await GetManifestDetails(currentManifest);
+        }
+        shipmentToEdit = null;
+    }
+
+    public async Task DeleteShipment(Shipment shipment)
+    {
+        var res = await ApiClient.DeleteShipment(shipment.AWBNumber);
+        if (res)
+        {
+            await GetManifestDetails(currentManifest);
+        }
+    }
+}

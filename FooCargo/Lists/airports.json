@@ -1,0 +1,42 @@
+[
+  {
+    "key": "BEY",
+    "name": "Hariri Airport"
+  },
+  {
+    "key": "CDG",
+    "name": "Charles Degaulles"
+  },
+  {
+    "key": "IST",
+    "name": "Istanbul"
+  },
+  {
+    "key": "DXB",
+    "name": "Duabi"
+  },
+  {
+    "key": "FRA",
+    "name": "Frankfurt"
+  },
+  {
+    "key": "MAD",
+    "name": "Madrid"
+  },
+  {
+    "key": "KWI",
+    "name": "Kuwait"
+  },
+  {
+    "key": "DOH",
+    "name": "DOha"
+  },
+  {
+    "key": "CAI",
+    "name": "Cairo"
+  },
+  {
+    "key": "ACC",
+    "name": "Accra"
+  }
+]

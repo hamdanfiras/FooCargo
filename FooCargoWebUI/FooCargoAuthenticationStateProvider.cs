@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using FooCargo.CoreModels;
+using FooCargoWebUI.APIClient;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;
@@ -13,13 +14,13 @@ namespace FooCargoWebUI
 {
     public class FooCargoAuthenticationStateProvider : AuthenticationStateProvider
     {
-        private readonly HttpClient httpClient;
+        private readonly ApiClient apiClient;
         private readonly ILocalStorageService localStorage;
         private ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
 
-        public FooCargoAuthenticationStateProvider(HttpClient httpClient, ILocalStorageService localStorage)
+        public FooCargoAuthenticationStateProvider(ApiClient apiClient, ILocalStorageService localStorage)
         {
-            this.httpClient = httpClient;
+            this.apiClient = apiClient;
             this.localStorage = localStorage;
         }
 
@@ -43,13 +44,12 @@ namespace FooCargoWebUI
         public async Task Login(LoginInfo loginInfo)
         {
             claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
-        
-            var res = await httpClient.PostAsJsonAsync("/api/account/login", loginInfo);
 
-            if (res.IsSuccessStatusCode)
+            var res = await apiClient.Login(loginInfo);
+
+            if (res != null)
             {
-                LoginResult loginResult = await res.Content.ReadFromJsonAsync<LoginResult>();
-                await localStorage.SetItemAsync("LOGIN_RESULT", loginResult);
+                await localStorage.SetItemAsync("LOGIN_RESULT", res);
                
             }
             else
